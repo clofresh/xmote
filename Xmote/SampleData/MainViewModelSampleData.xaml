@@ -1,0 +1,39 @@
+﻿<local:MainViewModel 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"       
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:Xmote">
+    
+    <local:MainViewModel.TvEpisodes>
+        <local:Item Title="Doing it" 
+                    Subtitle="Californication" />
+        <local:Item Title="Winter is Coming" 
+                    Subtitle="Game of Thrones" />
+        <local:Item Title="Drinking a lot" 
+                    Subtitle="Mad Men" />
+        <local:Item Title="Zombies!" 
+                    Subtitle="The Walking Dead" />
+    </local:MainViewModel.TvEpisodes>
+
+    <local:MainViewModel.TvShows>
+        <local:Item Title="Doing it" 
+                    Subtitle="Californication" />
+        <local:Item Title="Winter is Coming" 
+                    Subtitle="Game of Thrones" />
+        <local:Item Title="Drinking a lot" 
+                    Subtitle="Mad Men" />
+        <local:Item Title="Zombies!" 
+                    Subtitle="The Walking Dead" />
+    </local:MainViewModel.TvShows>
+
+    <local:MainViewModel.Movies>
+        <local:Item Title="Doing it" 
+                    Subtitle="Californication" />
+        <local:Item Title="Winter is Coming" 
+                    Subtitle="Game of Thrones" />
+        <local:Item Title="Drinking a lot" 
+                    Subtitle="Mad Men" />
+        <local:Item Title="Zombies!" 
+                    Subtitle="The Walking Dead" />
+    </local:MainViewModel.Movies>
+
+</local:MainViewModel>
