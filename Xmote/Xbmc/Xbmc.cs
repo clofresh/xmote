@@ -150,6 +150,12 @@ namespace Xmote.Xbmc
             RpcRequest("Player.Open", args, callback, errback);
         }
 
+        public void PlayEpisode(int episodeId, Callback callback = null, Errback errback = null)
+        {
+            var args = new List<object> { new Dictionary<string, object>() { { "episodeid", episodeId } } };
+            RpcRequest("Player.Open", args, callback, errback);
+        }
+
         static string BuildRequest(string method, List<object> args)
         {
             var request = new Dictionary<string, object>() {

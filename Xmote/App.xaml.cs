@@ -15,6 +15,15 @@ using Microsoft.Phone.Shell;
 
 namespace Xmote
 {
+    public class ImageButton : Button
+    {
+        public ImageButton()
+        {
+            DefaultStyleKey = typeof(ImageButton);
+        }
+
+    }
+
     public partial class App : Application
     {
         private static MainViewModel viewModel = null;

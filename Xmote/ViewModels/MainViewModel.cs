@@ -77,11 +77,16 @@ namespace Xmote
             {
                 foreach (var row in data.SelectToken("result.episodes"))
                 {
+                    int episodeId = (int)row["episodeid"];
                     var item = new Item()
                     {
                         Title = (string)row["title"],
                         Subtitle = (string)row["showtitle"],
-                        SortKey = (string)row["firstaired"]
+                        SortKey = (string)row["firstaired"],
+                        Play = new PlayCommand((e) =>
+                        {
+                            xbmc.PlayEpisode(episodeId);
+                        })
                     };
                     item.SetThumbnail(GetVfsUri((string)row["thumbnail"]));
                     this.TvEpisodes.Add(item);
