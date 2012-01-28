@@ -76,7 +76,7 @@
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <HyperlinkButton 
-                                NavigateUri="/TvShowsPage.xaml"
+                                NavigateUri="{Binding TargetUri}"
                                 Width="240" Height="300" Margin="-20,0,-4,0"
                                 HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                                 <HyperlinkButton.Background>

@@ -6,18 +6,67 @@
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:tk="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+    xmlns:local="clr-namespace:Xmote"
     mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="768"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait"  Orientation="Portrait"
-    shell:SystemTray.IsVisible="True">
+    shell:SystemTray.IsVisible="True"
+    tk:TiltEffect.IsTiltEnabled="True">
 
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
         <!--Pivot Control-->
-        <controls:Pivot Title="TV Shows" x:Name="TvShowsPivot">
+        <controls:Pivot Title="TV Shows"
+                        ItemsSource="{Binding Seasons}"
+                        x:Name="TvPivot">
+            <controls:Pivot.HeaderTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Title}"/>
+                </DataTemplate>
+            </controls:Pivot.HeaderTemplate>
+            <controls:Pivot.ItemTemplate>
+                <DataTemplate>
+                    <ListBox  ItemsSource="{Binding Episodes}"
+                          ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+                          Margin="0,-24,0,0"
+                          Padding="0,0,0,24">
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <tk:WrapPanel />
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <local:ImageButton Command="{Binding Play}" 
+                                    BorderThickness="0" 
+                                    HorizontalContentAlignment="Left"
+                                    VerticalContentAlignment="Top">
+                                    <StackPanel Margin="0,0,0,24"
+                                            Width="400" Height="200">
+                                        <StackPanel.Background>
+                                            <ImageBrush ImageSource="{Binding Thumbnail}" />
+                                        </StackPanel.Background>
+                                        <TextBlock Text="{Binding Title}" 
+                                               Padding="0,0,0,0"
+                                               Margin="6,-12,0,0"
+                                               HorizontalAlignment="Left"
+                                               VerticalAlignment="Top"   
+                                               Style="{StaticResource PhoneTextExtraLargeStyle}" />
+                                        <TextBlock Text="{Binding Subtitle}"
+                                               HorizontalAlignment="Left"
+                                               Margin="6,128,0,0"
+                                               Style="{StaticResource PhoneTextSubtleStyle}"/>
+                                    </StackPanel>
+                                </local:ImageButton>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </DataTemplate>
+            </controls:Pivot.ItemTemplate>
         </controls:Pivot>
     </Grid>
 

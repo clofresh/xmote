@@ -65,12 +65,20 @@ namespace Xmote.Xbmc
         public string method;
     }
 
-
     public class Xbmc {
         private string ipAddress;
         private int    port;
         private string userName;
         private string password;
+
+        public static Xbmc instance()
+        {
+            var ipAddress = "127.0.0.1";
+            var port = 8080;
+            var userName = "xbmc";
+            var password = "xbmc";
+            return new Xbmc(ipAddress, port, userName, password);
+        }
 
         public Xbmc(string ipAddress, int port, string userName, string password)
         {
@@ -84,6 +92,12 @@ namespace Xmote.Xbmc
         {
             return new Uri(String.Format("http://{0}:{1}/jsonrpc", this.ipAddress, this.port));
         }
+
+        public Uri GetVfsUri(string uriString)
+        {
+            return new Uri(String.Format("http://{0}:{1}@{2}:{3}/vfs/{4}", userName, password, ipAddress, port, uriString));
+        }
+
 
         private WebClient RpcRequest(string method, List<object> args, Callback callback, Errback errback)
         {
@@ -130,6 +144,18 @@ namespace Xmote.Xbmc
         {
             var args = new List<object> { properties, limits, sort };
             RpcRequest("VideoLibrary.GetTVShows", args, callback, errback);
+        }
+
+        public void GetTvSeasons(int tvShowId, List<string> properties, Limits limits, Sort sort, Callback callback, Errback errback = null)
+        {
+            var args = new List<object> { tvShowId, properties, limits, sort };
+            RpcRequest("VideoLibrary.GetSeasons", args, callback, errback);
+        }
+
+        public void GetTvEpisodes(int tvShowId, int season, List<string> properties, Limits limits, Sort sort, Callback callback, Errback errback = null)
+        {
+            var args = new List<object> { tvShowId, season, properties, limits, sort };
+            RpcRequest("VideoLibrary.GetEpisodes", args, callback, errback);
         }
 
         public void GetRecentlyAddedMovies(List<string> properties, Limits limits, Sort sort, Callback callback, Errback errback = null)

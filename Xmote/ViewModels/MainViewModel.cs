@@ -14,6 +14,7 @@ using System.Windows.Shapes;
 using System.Collections.ObjectModel;
 using System.Net;
 using System.Linq;
+using Xmote.Xbmc;
 
 namespace Xmote
 {
@@ -27,10 +28,6 @@ namespace Xmote
             this.TvEpisodes = new ObservableCollection<Item>();
             this.TvShows = new ObservableCollection<Item>();
             this.Movies = new ObservableCollection<Item>();
-            this.Host = "127.0.0.1";
-            this.Port = 8080;
-            this.User = "xbmc";
-            this.Password = "xbmc";
         }
 
         // Bindings
@@ -45,10 +42,9 @@ namespace Xmote
 
         public void LoadData()
         {
-            var xbmc = new Xmote.Xbmc.Xbmc(this.Host, this.Port, this.User, this.Password);
-            LoadTvEpisodes(xbmc);
-            LoadTvShows(xbmc);
-            LoadMovies(xbmc);
+            LoadTvEpisodes();
+            LoadTvShows();
+            LoadMovies();
 
             this.IsDataLoaded = true;
         }
@@ -57,13 +53,9 @@ namespace Xmote
 
         #region private
 
-        private string Host;
-        private int Port;
-        private string User;
-        private string Password;
-
-        private void LoadTvEpisodes(Xmote.Xbmc.Xbmc xbmc)
+        private void LoadTvEpisodes()
         {
+            var xbmc = Xbmc.Xbmc.instance();
             var properties = new List<string> { "title", "showtitle", "fanart", "thumbnail", "firstaired" };
             var limits = new Xmote.Xbmc.Limits { start = 0, end = 100 };
             var sort = new Xmote.Xbmc.Sort
@@ -78,8 +70,9 @@ namespace Xmote
                 foreach (var row in data.SelectToken("result.episodes"))
                 {
                     int episodeId = (int)row["episodeid"];
-                    var item = new Item()
+                    var item = new TvEpisodeItem()
                     {
+                        Id = episodeId,
                         Title = (string)row["title"],
                         Subtitle = (string)row["showtitle"],
                         SortKey = (string)row["firstaired"],
@@ -88,18 +81,19 @@ namespace Xmote
                             xbmc.PlayEpisode(episodeId);
                         })
                     };
-                    item.SetThumbnail(GetVfsUri((string)row["thumbnail"]));
+                    item.SetThumbnail(xbmc.GetVfsUri((string)row["thumbnail"]));
                     this.TvEpisodes.Add(item);
                     if (Background == null)
                     {
-                        SetBackground(GetVfsUri((string)row["fanart"]));
+                        SetBackground(xbmc.GetVfsUri((string)row["fanart"]));
                     }
                 }
             });
         }
 
-        private void LoadTvShows(Xmote.Xbmc.Xbmc xbmc)
+        private void LoadTvShows()
         {
+            var xbmc = Xbmc.Xbmc.instance();
             var properties = new List<string> { "title", "genre", "thumbnail" };
             var limits = new Xmote.Xbmc.Limits { start = 0, end = 100 };
             var sort = new Xmote.Xbmc.Sort
@@ -111,21 +105,25 @@ namespace Xmote
 
             xbmc.GetTvShows(properties, limits, sort, (data) =>
             {
+                Debug.WriteLine(data);
                 foreach (var row in data.SelectToken("result.tvshows"))
                 {
-                    var item = new Item()
+                    var item = new TvShowItem()
                     {
+                        Id = (int)row["tvshowid"],
                         Title = (string)row["title"],
-                        Subtitle = (string)row["genre"]
+                        Subtitle = (string)row["genre"],
+                        Season = 1
                     };
-                    item.SetThumbnail(GetVfsUri((string)row["thumbnail"]));
+                    item.SetThumbnail(xbmc.GetVfsUri((string)row["thumbnail"]));
                     this.TvShows.Add(item);
                 }
             });
         }
         
-        private void LoadMovies(Xmote.Xbmc.Xbmc xbmc)
+        private void LoadMovies()
         {
+            var xbmc = Xbmc.Xbmc.instance();
             var properties = new List<string> { "title", "tagline", "thumbnail" };
             var limits = new Xmote.Xbmc.Limits { start = 0, end = 100 };
             var sort = new Xmote.Xbmc.Sort
@@ -140,15 +138,16 @@ namespace Xmote
                 foreach (var row in data.SelectToken("result.movies"))
                 {
                     int movieId = (int)row["movieid"];
-                    var item = new Item()
+                    var item = new MovieItem()
                     {
+                        Id = movieId,
                         Title = (string)row["title"],
                         Subtitle = (string)row["tagline"],
                         Play = new PlayCommand((e) => {
                             xbmc.PlayMovie(movieId);
                         })
                     };
-                    item.SetThumbnail(GetVfsUri((string)row["thumbnail"]));
+                    item.SetThumbnail(xbmc.GetVfsUri((string)row["thumbnail"]));
                     this.Movies.Add(item);
                 }
             });
@@ -164,11 +163,7 @@ namespace Xmote
             }
         }
 
-        private Uri GetVfsUri(string uriString)
-        {
-            return new Uri(String.Format("http://{0}:{1}@{2}:{3}/vfs/{4}", this.User, this.Password, this.Host, this.Port, uriString));
-        }
-
+        
         private void NotifyPropertyChanged(String propertyName)
         {
             Debug.WriteLine(propertyName + " property changed");
