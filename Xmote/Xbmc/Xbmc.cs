@@ -7,7 +7,7 @@ using System.Diagnostics;
 
 namespace Xmote.Xbmc
 {
-    public delegate void Callback(JObject response);
+    public delegate void Callback(JToken response);
     public delegate void Errback(Exception e);
 
     public class SortOrder
@@ -134,40 +134,148 @@ namespace Xmote.Xbmc
             return client;
         }
 
-        public void GetMovies(List<string> properties, Limits limits, Sort sort, Callback callback, Errback errback = null)
+        public void GetMovies(Callback callback, Errback errback = null, List<string> properties = null, Limits limits = null, Sort sort = null)
         {
+            if (properties == null)
+            {
+                properties = new List<string> { "title", "tagline", "thumbnail" };
+            }
+
+            if (limits == null)
+            {
+                limits = new Limits { start = 0, end = 100 };
+            }
+
+            if (sort == null)
+            {
+                sort = new Sort
+                {
+                    ignorearticle = true,
+                    order = SortOrder.Descending,
+                    method = SortMethod.Title
+                };
+            }
+                        
             var args = new List<object> { properties, limits, sort };
-            RpcRequest("VideoLibrary.GetMovies", args, callback, errback);
+            RpcRequest("VideoLibrary.GetMovies", args, (data) =>
+            {
+                callback(data.SelectToken("result.movies"));
+            }, errback);
         }
 
-        public void GetTvShows(List<string> properties, Limits limits, Sort sort, Callback callback, Errback errback = null)
+        public void GetTvShows(Callback callback, Errback errback = null, List<string> properties = null, Limits limits = null, Sort sort = null)
         {
+            if (properties == null)
+            {
+                properties = new List<string> { "title", "genre", "thumbnail" };
+            }
+
+            if (limits == null)
+            {
+                limits = new Limits { start = 0, end = 100 };
+            }
+
+            if (sort == null)
+            {
+                sort = new Sort
+                {
+                    ignorearticle = true,
+                    order = SortOrder.Ascending,
+                    method = SortMethod.Title
+                };
+            }
+
             var args = new List<object> { properties, limits, sort };
-            RpcRequest("VideoLibrary.GetTVShows", args, callback, errback);
+            RpcRequest("VideoLibrary.GetTVShows", args, (data) =>
+            {
+                callback(data.SelectToken("result.tvshows"));
+            }, errback);
         }
 
-        public void GetTvSeasons(int tvShowId, List<string> properties, Limits limits, Sort sort, Callback callback, Errback errback = null)
+        public void GetTvSeasons(int tvShowId, Callback callback, Errback errback = null, List<string> properties = null, Limits limits = null, Sort sort = null)
         {
+            if (properties == null)
+            {
+                properties = new List<string> { "showtitle", "season", "fanart", "thumbnail", "episode", "playcount" };
+            }
+
+            if (limits == null)
+            {
+                limits = new Limits { start = 0, end = 100 };
+            }
+
+            if (sort == null)
+            {
+                sort = new Sort
+                {
+                    ignorearticle = true,
+                    order = SortOrder.Ascending,
+                    method = SortMethod.None
+                };
+            }
+
             var args = new List<object> { tvShowId, properties, limits, sort };
-            RpcRequest("VideoLibrary.GetSeasons", args, callback, errback);
+            RpcRequest("VideoLibrary.GetSeasons", args, (data) =>
+            {
+                callback(data.SelectToken("result.seasons"));
+            }, errback);
         }
 
-        public void GetTvEpisodes(int tvShowId, int season, List<string> properties, Limits limits, Sort sort, Callback callback, Errback errback = null)
+        public void GetTvEpisodes(int tvShowId, int season, Callback callback, Errback errback = null, List<string> properties = null, Limits limits = null, Sort sort = null)
         {
+            if (properties == null)
+            {
+                properties = new List<string> { "title", "showtitle", "fanart", "thumbnail", "firstaired" };
+            }
+
+            if (limits == null)
+            {
+                limits = new Limits { start = 0, end = 100 };
+            }
+
+            if (sort == null)
+            {
+                sort = new Sort
+                {
+                    ignorearticle = true,
+                    order = SortOrder.Descending,
+                    method = SortMethod.Date
+                };
+            }
             var args = new List<object> { tvShowId, season, properties, limits, sort };
-            RpcRequest("VideoLibrary.GetEpisodes", args, callback, errback);
+            RpcRequest("VideoLibrary.GetEpisodes", args, (data) =>
+            {
+                callback(data.SelectToken("result.episodes"));
+            }, errback);
         }
 
-        public void GetRecentlyAddedMovies(List<string> properties, Limits limits, Sort sort, Callback callback, Errback errback = null)
+        public void GetRecentlyAddedEpisodes(Callback callback, Errback errback = null, List<string> properties = null, Limits limits = null, Sort sort = null)
         {
-            var args = new List<object> { properties, limits, sort };
-            RpcRequest("VideoLibrary.GetRecentlyAddedMovies", args, callback, errback);
-        }
+            if (properties == null)
+            {
+                properties = new List<string> { "title", "showtitle", "fanart", "thumbnail", "firstaired" };
+            }
 
-        public void GetRecentlyAddedEpisodes(List<string> properties, Limits limits, Sort sort, Callback callback, Errback errback = null)
-        {
+            if (limits == null)
+            {
+                limits = new Limits { start = 0, end = 100 };
+            }
+
+            if (sort == null)
+            {
+                sort = new Sort
+                {
+                    ignorearticle = true,
+                    order = SortOrder.Descending,
+                    method = SortMethod.Date
+                };
+            }
+
             var args = new List<object> { properties, limits, sort };
-            RpcRequest("VideoLibrary.GetRecentlyAddedEpisodes", args, callback, errback);
+            RpcRequest("VideoLibrary.GetRecentlyAddedEpisodes", args, (data) =>
+            {
+                callback(data.SelectToken("result.episodes"));
+            }, errback);
         }
 
         public void PlayMovie(int movieId, Callback callback = null, Errback errback = null)

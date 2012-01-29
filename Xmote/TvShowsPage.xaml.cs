@@ -47,18 +47,8 @@ namespace Xmote
         {
             Seasons = new ObservableCollection<TvSeasonItem>();
             var xbmc = Xbmc.Xbmc.instance();
-            var properties = new List<string> { "showtitle", "season", "fanart", "thumbnail", "episode", "playcount" };
-            var limits = new Xmote.Xbmc.Limits { start = 0, end = 100 };
-            var sort = new Xmote.Xbmc.Sort
+            xbmc.GetTvSeasons(tvShowId, (rows) =>
             {
-                ignorearticle = true,
-                order = Xmote.Xbmc.SortOrder.Ascending,
-                method = Xmote.Xbmc.SortMethod.None
-            };
-
-            xbmc.GetTvSeasons(tvShowId, properties, limits, sort, (data) =>
-            {
-                var rows = data.SelectToken("result.seasons");
                 if (rows != null)
                 {
                     foreach (var row in rows)
@@ -69,12 +59,8 @@ namespace Xmote
                             Title = String.Format("Season {0}", num)
                         };
 
-                        var episodeProperties = new List<string>() { "title", "showtitle", "fanart", "thumbnail", "firstaired" };
-
-
-                        xbmc.GetTvEpisodes(tvShowId, num, episodeProperties, limits, sort, (d2) =>
+                        xbmc.GetTvEpisodes(tvShowId, num, (rows2) =>
                         {
-                            var rows2 = d2.SelectToken("result.episodes");
                             if (rows2 != null)
                             {
                                 foreach (var row2 in rows2)

@@ -56,18 +56,9 @@ namespace Xmote
         private void LoadTvEpisodes()
         {
             var xbmc = Xbmc.Xbmc.instance();
-            var properties = new List<string> { "title", "showtitle", "fanart", "thumbnail", "firstaired" };
-            var limits = new Xmote.Xbmc.Limits { start = 0, end = 100 };
-            var sort = new Xmote.Xbmc.Sort
+            xbmc.GetRecentlyAddedEpisodes((rows) =>
             {
-                ignorearticle = true,
-                order = Xmote.Xbmc.SortOrder.Descending,
-                method = Xmote.Xbmc.SortMethod.Date
-            };
-
-            xbmc.GetRecentlyAddedEpisodes(properties, limits, sort, (data) =>
-            {
-                foreach (var row in data.SelectToken("result.episodes"))
+                foreach (var row in rows)
                 {
                     int episodeId = (int)row["episodeid"];
                     var item = new TvEpisodeItem()
@@ -94,19 +85,9 @@ namespace Xmote
         private void LoadTvShows()
         {
             var xbmc = Xbmc.Xbmc.instance();
-            var properties = new List<string> { "title", "genre", "thumbnail" };
-            var limits = new Xmote.Xbmc.Limits { start = 0, end = 100 };
-            var sort = new Xmote.Xbmc.Sort
+            xbmc.GetTvShows((rows) =>
             {
-                ignorearticle = true,
-                order = Xmote.Xbmc.SortOrder.Ascending,
-                method = Xmote.Xbmc.SortMethod.Title
-            };
-
-            xbmc.GetTvShows(properties, limits, sort, (data) =>
-            {
-                Debug.WriteLine(data);
-                foreach (var row in data.SelectToken("result.tvshows"))
+                foreach (var row in rows)
                 {
                     var item = new TvShowItem()
                     {
@@ -124,18 +105,9 @@ namespace Xmote
         private void LoadMovies()
         {
             var xbmc = Xbmc.Xbmc.instance();
-            var properties = new List<string> { "title", "tagline", "thumbnail" };
-            var limits = new Xmote.Xbmc.Limits { start = 0, end = 100 };
-            var sort = new Xmote.Xbmc.Sort
+            xbmc.GetMovies((rows) =>
             {
-                ignorearticle = true,
-                order = Xmote.Xbmc.SortOrder.Ascending,
-                method = Xmote.Xbmc.SortMethod.Title
-            };
-
-            xbmc.GetMovies(properties, limits, sort, (data) =>
-            {
-                foreach (var row in data.SelectToken("result.movies"))
+                foreach (var row in rows)
                 {
                     int movieId = (int)row["movieid"];
                     var item = new MovieItem()
