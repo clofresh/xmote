@@ -110,6 +110,7 @@ namespace Xmote.Xbmc
                 try
                 {
                     var response = JObject.Parse(e.Result);
+                    
                     if (callback != null)
                     {
                         callback(response);
@@ -210,7 +211,7 @@ namespace Xmote.Xbmc
                 {
                     ignorearticle = true,
                     order = SortOrder.Ascending,
-                    method = SortMethod.None
+                    method = SortMethod.Year
                 };
             }
 
@@ -238,8 +239,8 @@ namespace Xmote.Xbmc
                 sort = new Sort
                 {
                     ignorearticle = true,
-                    order = SortOrder.Descending,
-                    method = SortMethod.Date
+                    order = SortOrder.Ascending,
+                    method = SortMethod.Episode
                 };
             }
             var args = new List<object> { tvShowId, season, properties, limits, sort };
