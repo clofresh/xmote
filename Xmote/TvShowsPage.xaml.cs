@@ -31,7 +31,13 @@ namespace Xmote
         public ImageBrush Background { get; private set; }
         private void SetBackground(Uri value)
         {
-            var newBackground = new ImageBrush() { ImageSource = new BitmapImage(value), Opacity = .8 };
+            var newBackground = new ImageBrush() 
+            { 
+                ImageSource = new BitmapImage(value), 
+                Opacity = .8,
+                Stretch = Stretch.UniformToFill
+            };
+
             if (newBackground != this.Background)
             {
                 this.Background = newBackground;
