@@ -15,11 +15,17 @@ using Xmote.Xbmc;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using Newtonsoft.Json.Linq;
 
 namespace Xmote
 {
     public class TvShowsViewModel : INotifyPropertyChanged
     {
+        public TvShowsViewModel()
+        {
+            Seasons = new ObservableCollection<TvSeasonItem>();
+        }
+
         public ObservableCollection<TvSeasonItem> Seasons { get; private set; }
         public event PropertyChangedEventHandler PropertyChanged;
         public ImageBrush Background { get; private set; }
@@ -45,8 +51,8 @@ namespace Xmote
         public bool IsDataLoaded { get; private set; }
         public void LoadData(Pivot TvPivot, int tvShowId, int seasonNum)
         {
-            Seasons = new ObservableCollection<TvSeasonItem>();
             var xbmc = Xbmc.Xbmc.instance();
+
             xbmc.GetTvSeasons(tvShowId, (rows) =>
             {
                 if (rows != null)
@@ -54,45 +60,54 @@ namespace Xmote
                     foreach (var row in rows)
                     {
                         var num = (int)row["season"];
-                        var season = new TvSeasonItem() 
+                        var season = new TvSeasonItem()
                         {
-                            Title = String.Format("Season {0}", num)
+                            Title = String.Format("Season {0}", num),
+                            Season = num
                         };
+
+                        this.Seasons.Add(season);
 
                         xbmc.GetTvEpisodes(tvShowId, num, (rows2) =>
                         {
-                            if (rows2 != null)
-                            {
-                                foreach (var row2 in rows2)
-                                {
-                                    int episodeId = (int)row2["episodeid"];
-                                    var item = new TvEpisodeItem()
-                                    {
-                                        Id = episodeId,
-                                        Title = (string)row2["title"],
-                                        Subtitle = (string)row2["showtitle"],
-                                        SortKey = (string)row2["firstaired"],
-                                        Play = new PlayCommand((e) =>
-                                        {
-                                            xbmc.PlayEpisode(episodeId);
-                                        })
-                                    };
-                                    item.SetThumbnail(xbmc.GetVfsUri((string)row2["thumbnail"]));
-                                    season.Episodes.Add(item);
-                                    if (Background == null)
-                                    {
-                                        SetBackground(xbmc.GetVfsUri((string)row2["fanart"]));
-                                    }
-                                    season.Episodes.Add(item);
-                                }
-                            }
-                            Seasons.Add(season);
-                            NotifyPropertyChanged("Seasons");
+                            LoadSeason(xbmc, season, rows2);
                         });
                     }
                 }
             });
-        }    
+        }
+    
+        private void LoadSeason(Xbmc.Xbmc xbmc, TvSeasonItem season, JToken rows) {
+            int episodeId;
+            TvEpisodeItem item;
+
+            if (rows != null)
+            {
+                foreach (var row in rows)
+                {
+                    episodeId = (int)row["episodeid"];
+                    item = new TvEpisodeItem()
+                    {
+                        Id = episodeId,
+                        Title = (string)row["title"],
+                        Subtitle = (string)row["showtitle"],
+                        SortKey = (string)row["firstaired"],
+                        Play = new PlayCommand((e) =>
+                        {
+                            xbmc.PlayEpisode(episodeId);
+                        })
+                    };
+                    item.SetThumbnail(xbmc.GetVfsUri((string)row["thumbnail"]));
+                    if (Background == null)
+                    {
+                        SetBackground(xbmc.GetVfsUri((string)row["fanart"]));
+                    }
+                    Debug.WriteLine(String.Format("S{0}E{1}", item.Season, item.Id));
+                    season.Episodes.Add(item);
+                }
+                NotifyPropertyChanged("Seasons");
+            }
+        }
     }
 
     public partial class TvShowsPage : PhoneApplicationPage
