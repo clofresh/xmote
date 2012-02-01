@@ -26,9 +26,21 @@ namespace Xmote
             {
                 if (!App.ViewModel.IsDataLoaded)
                 {
-                    App.ViewModel.LoadData();
+                    try
+                    {
+                        App.ViewModel.LoadData();
+                    }
+                    catch (NoSettings)
+                    {
+                        GoToSettings();
+                    }
                 }
             });
+        }
+
+        private void GoToSettings(object sender = null, EventArgs e = null)
+        {
+            NavigationService.Navigate(new Uri("/SettingsPage.xaml", UriKind.Relative));
         }
     }
 }

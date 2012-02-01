@@ -1,0 +1,64 @@
+﻿<phone:PhoneApplicationPage 
+    x:Class="Xmote.SettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    SupportedOrientations="Portrait" Orientation="Portrait"
+    mc:Ignorable="d" d:DesignHeight="696" d:DesignWidth="480"
+    shell:SystemTray.IsVisible="True">
+
+    <Grid x:Name="LayoutRoot" Background="Transparent">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
+            <TextBlock x:Name="ApplicationTitle" Text="Xmote" Style="{StaticResource PhoneTextNormalStyle}"/>
+            <TextBlock x:Name="PageTitle" Text="Settings" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
+        </StackPanel>
+        
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="165*" />
+                <ColumnDefinition Width="315*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="72" />
+                <RowDefinition Height="72" />
+                <RowDefinition Height="72" />
+                <RowDefinition Height="72" />
+                <RowDefinition Height="72" />
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Grid.Column="0" Height="30" Text="Connection name" />
+            <TextBox Grid.Row="0" Grid.Column="1" x:Name="ConnectionName" Height="72" Text="" />
+
+            <TextBlock Grid.Row="1" Grid.Column="0" Height="30" Text="Host" Margin="12,0,0,-12" />
+            <TextBox Grid.Row="1" Grid.Column="1" x:Name="Host" Height="72" Text="" InputScope="URL"/>
+
+            <TextBlock Grid.Row="2" Grid.Column="0" Height="30" Text="Port"  Margin="12,0,0,-12" />
+            <TextBox Grid.Row="2" Grid.Column="1" x:Name="Port" Height="72" Text="" InputScope="TelephoneNumber" />
+
+            <TextBlock Grid.Row="3" Grid.Column="0" Height="30" Text="User" Margin="12,0,0,-12" />
+            <TextBox Grid.Row="3" Grid.Column="1" x:Name="User" Height="72" Text="" />
+
+            <TextBlock Grid.Row="4" Grid.Column="0" Height="30" Text="Password" Margin="12,0,0,-12" />
+            <PasswordBox Grid.Row="4" Grid.Column="1" x:Name="Password" Height="72" />
+
+        </Grid>
+        
+    </Grid>
+    
+    <phone:PhoneApplicationPage.ApplicationBar>
+        <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
+            <shell:ApplicationBarIconButton IconUri="/Images/appbar.check.rest.png" Text="Save" Click="Save" />
+        </shell:ApplicationBar>
+    </phone:PhoneApplicationPage.ApplicationBar>
+
+</phone:PhoneApplicationPage>

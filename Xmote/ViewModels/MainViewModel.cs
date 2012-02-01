@@ -37,7 +37,7 @@ namespace Xmote
 
         // Other public stuff
         public event PropertyChangedEventHandler PropertyChanged;
-        public bool IsDataLoaded { get; private set; }
+        public bool IsDataLoaded { get; set; }
         public ImageBrush Background { get; private set; }
 
         public void LoadData()
@@ -53,9 +53,28 @@ namespace Xmote
 
         #region private
 
+        public bool RequestsPending 
+        { 
+            get { return pending > 0; }
+        }
+
+        private int pending = 0;
+        private int IncrementPending() {
+            pending += 1;
+            NotifyPropertyChanged("RequestsPending");
+            return pending;
+        }
+        private int DecrementPending()
+        {
+            pending -= 1;
+            NotifyPropertyChanged("RequestsPending");
+            return pending;
+        }
+
         private void LoadTvEpisodes()
         {
             var xbmc = Xbmc.Xbmc.instance();
+            IncrementPending();
             xbmc.GetRecentlyAddedEpisodes((rows) =>
             {
                 foreach (var row in rows)
@@ -79,12 +98,14 @@ namespace Xmote
                         SetBackground(xbmc.GetVfsUri((string)row["fanart"]));
                     }
                 }
+                DecrementPending();
             });
         }
 
         private void LoadTvShows()
         {
             var xbmc = Xbmc.Xbmc.instance();
+            IncrementPending();
             xbmc.GetTvShows((rows) =>
             {
                 foreach (var row in rows)
@@ -99,12 +120,14 @@ namespace Xmote
                     item.SetThumbnail(xbmc.GetVfsUri((string)row["thumbnail"]));
                     this.TvShows.Add(item);
                 }
+                DecrementPending();
             });
         }
         
         private void LoadMovies()
         {
             var xbmc = Xbmc.Xbmc.instance();
+            IncrementPending();
             xbmc.GetMovies((rows) =>
             {
                 foreach (var row in rows)
@@ -122,6 +145,7 @@ namespace Xmote
                     item.SetThumbnail(xbmc.GetVfsUri((string)row["thumbnail"]));
                     this.Movies.Add(item);
                 }
+                DecrementPending();
             });
         }
 

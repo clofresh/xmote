@@ -65,6 +65,11 @@ namespace Xmote.Xbmc
         public string method;
     }
 
+    public class XbmcException : Exception { }
+    public class InvalidHost : XbmcException { }
+    public class InvalidPort : XbmcException { }
+    public class InvalidUserPassword : XbmcException { }
+
     public class Xbmc {
         private string ipAddress;
         private int    port;
@@ -73,11 +78,16 @@ namespace Xmote.Xbmc
 
         public static Xbmc instance()
         {
-            var ipAddress = "127.0.0.1";
-            var port = 8080;
-            var userName = "xbmc";
-            var password = "xbmc";
-            return new Xbmc(ipAddress, port, userName, password);
+            return Xbmc.FromSettings(SettingsPage.ReadSettings());
+        }
+
+        public static Xbmc FromSettings(Settings settings)
+        {
+            if (settings.Host == null || settings.Host == "") throw new InvalidHost();
+            if (settings.Port == null || settings.Port == 0) throw new InvalidPort();
+            if (settings.User == null && settings.Password != null) throw new InvalidUserPassword();
+
+            return new Xbmc(settings.Host, settings.Port, settings.User, settings.Password);
         }
 
         public Xbmc(string ipAddress, int port, string userName, string password)
