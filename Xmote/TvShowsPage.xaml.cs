@@ -84,15 +84,12 @@ namespace Xmote
         }
     
         private void LoadSeason(Xbmc.Xbmc xbmc, TvSeasonItem season, JToken rows) {
-            int episodeId;
-            TvEpisodeItem item;
-
             if (rows != null)
             {
                 foreach (var row in rows)
                 {
-                    episodeId = (int)row["episodeid"];
-                    item = new TvEpisodeItem()
+                    var episodeId = (int)row["episodeid"];
+                    var item = new TvEpisodeItem()
                     {
                         Id = episodeId,
                         Title = (string)row["title"],
