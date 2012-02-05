@@ -98,6 +98,11 @@ namespace Xmote.Xbmc
             this.password = password;
         }
 
+        public Uri GetSendKeyUri(int key)
+        {
+            return new Uri(String.Format("http://{0}:{1}/xbmcCmds/xbmcHttp?command=Sendkey({2})", ipAddress, port, key));
+        }
+
         public Uri GetUri()
         {
             return new Uri(String.Format("http://{0}:{1}/jsonrpc", this.ipAddress, this.port));
@@ -299,6 +304,24 @@ namespace Xmote.Xbmc
         {
             var args = new List<object> { new Dictionary<string, object>() { { "episodeid", episodeId } } };
             RpcRequest("Player.Open", args, callback, errback);
+        }
+
+        public void SendKey(int key)
+        {
+            var client = new WebClient();
+            client.Credentials = new NetworkCredential(this.userName, this.password);
+            client.DownloadStringCompleted += (sender, e) =>
+            {
+                try
+                {
+                    Debug.WriteLine(String.Format("Send key {0}", key));
+                }
+                catch (WebException exception)
+                {
+                    Debug.WriteLine(String.Format("Send key {0}", key));
+                }
+            };
+            client.DownloadStringAsync(GetSendKeyUri(key));
         }
 
         static string BuildRequest(string method, List<object> args)

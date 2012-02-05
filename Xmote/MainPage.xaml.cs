@@ -11,6 +11,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using System.Diagnostics;
+using Xmote.Xbmc;
 
 namespace Xmote
 {
@@ -41,6 +42,20 @@ namespace Xmote
         private void GoToSettings(object sender = null, EventArgs e = null)
         {
             NavigationService.Navigate(new Uri("/SettingsPage.xaml", UriKind.Relative));
+        }
+
+        private void Keyboard_KeyUp(object sender, KeyEventArgs e)
+        {
+            var xbmc = Xbmc.Xbmc.instance();
+            Byte[] bytecode = { 0, 0, 0xf1, BitConverter.GetBytes(e.PlatformKeyCode)[0] };
+            if (BitConverter.IsLittleEndian)
+            {
+                Array.Reverse(bytecode);
+            }
+            var intcode = BitConverter.ToInt32(bytecode, 0);
+            Debug.WriteLine(String.Format("PlatformKeyCode: {0}, Key: {1}, ASCII: {2}", (int)e.PlatformKeyCode, e.Key, (int)e.Key));
+            Debug.WriteLine(String.Format("SendKey({0})", intcode));
+            xbmc.SendKey(intcode);
         }
     }
 }

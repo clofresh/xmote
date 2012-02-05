@@ -24,7 +24,11 @@
         <!--Panorama control-->
         <controls:Panorama Title="Xmote" 
                            Background="{Binding Background}">
-
+            <controls:PanoramaItem Header="Remote" Margin="0,-40,0,0">
+                <StackPanel>
+                    <TextBox x:Name="Keyboard" KeyUp="Keyboard_KeyUp" />
+                </StackPanel>
+            </controls:PanoramaItem>
             <controls:PanoramaItem Header="TV Episodes" Margin="0,-40,0,0">
                 <ListBox  ItemsSource="{Binding TvEpisodes}"
                           ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
